@@ -20,3 +20,10 @@ n + S m = S (n + m)
 (*) :: Nat -> Nat -> Nat
 n * O = O
 n * S m = (n * m) + n
+
+(^) :: Nat -> Nat -> Nat
+n ^ O = S O
+n ^ S m = (n ^ m) * n
+
+double = (*) sso
+
