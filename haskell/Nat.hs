@@ -27,3 +27,6 @@ n ^ S m = (n ^ m) * n
 
 double = (*) sso
 
+pred :: Nat -> Nat
+pred O = O
+pred (S n) = n
