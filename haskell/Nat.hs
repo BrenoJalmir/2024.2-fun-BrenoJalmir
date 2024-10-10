@@ -18,11 +18,11 @@ n + O = n
 n + S m = S (n + m)
 
 (*) :: Nat -> Nat -> Nat
-n * O = O
+_ * O = O
 n * S m = (n * m) + n
 
 (^) :: Nat -> Nat -> Nat
-n ^ O = S O
+_ ^ O = S O
 n ^ S m = (n ^ m) * n
 
 double = (*) sso
@@ -39,10 +39,12 @@ fib :: Nat -> Nat
 fib (S (S x)) = fib (S x) + fib x
 fib _ = S O
 
--- min :: (Nat, Nat) -> Nat
--- min (n, O) = O
--- min (n, S m) = min (pred n, m)
+min :: (Nat, Nat) -> Nat
+min (_, O) = O
+min (O, _) = O
+min (S n, S m) = S (min (n, m))
 
--- max :: (Nat, Nat) -> Nat
--- max (n, O) = n
--- max (n, S m) = max (pred n, m)
+max :: (Nat, Nat) -> Nat
+max (n, O) = n
+max (O, n) = n
+max (S n, S m) = S (max (n, m))
