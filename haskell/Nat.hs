@@ -1,6 +1,8 @@
 module Nat where
 
-import Prelude hiding (Num(..), (^), pred, min, (<), max, (>), div, quot, rem)
+import Prelude hiding (Num(..), Bool(..), (^), pred, min, (<), (<=), max, (>), (>=), (==), div, quot, rem)
+
+import Bool
 
 data Nat where
   O :: Nat
@@ -17,9 +19,14 @@ ssso = S sso
 n + O = n
 n + S m = S (n + m)
 
+monus :: Nat -> Nat -> Nat
+monus n O = n
+monus n (S m) = pred (n - m)
+
 (-) :: Nat -> Nat -> Nat
-n - O = n
-n - S m = pred (n - m)
+(-) = monus
+-- n - O = n
+-- n - S m = pred (n - m)
 
 (*) :: Nat -> Nat -> Nat
 _ * O = O
@@ -40,8 +47,8 @@ fact O = S O
 fact (S n) = S n * fact n
 
 fib :: Nat -> Nat
-fib (S (S x)) = fib (S x) + fib x
-fib _ = S O
+fib (S (S n)) = fib (S n) + fib n
+fib n = n
 
 min :: (Nat, Nat) -> Nat
 min (_, O) = O
@@ -51,8 +58,14 @@ min (S n, S m) = S (min (n, m))
 (<) :: Nat -> Nat -> Bool
 O < O = False
 _ < O = False
-O < n = True
+O < _ = True
 S n < S m = n < m
+
+(<=) :: Nat -> Nat -> Bool
+O <= O = True
+_ <= O = False
+O <= _ = True
+S n <= S m = n <= m
 
 max :: (Nat, Nat) -> Nat
 max (n, O) = n
@@ -65,23 +78,31 @@ O > _ = False
 _ > O = True
 S n > S m = n > m
 
--- isZero :: Nat -> Bool
--- isZero O = True
--- isZero (S _) = False
+(>=) :: Nat -> Nat -> Bool
+O >= O = True
+O >= _ = False
+_ >= O = True
+S n >= S m = n >= m
 
--- div :: (Nat, Nat) -> (Nat, Nat)
--- div (O, _) = (O, O)
--- div (_, O) = error "Division by zero isn't defined"
--- div (n, S O) = (n, O)
--- div (n, S (S m)) = (O, S (S m))
+(==) :: Nat -> Nat -> Bool
+-- n == n = True
+S n == S m = n == m
+O == O = True
+O == _ = False
 
+div :: (Nat, Nat) -> (Nat, Nat)
+div (_, O) = error "Division by zero isn't defined"
+div (n, m) = (quot (n, m), rem (n, m))
 
--- quot :: (Nat, Nat) -> Nat
--- quot (n, O) = error "Division by zero isn't defined"
--- quot (n, S O) = n
--- quot (n, S (S m)) = 
+quot :: (Nat, Nat) -> Nat
+quot (n, O) = error "Division by zero isn't defined"
+quot (O, n) = O
+quot (n, S O) = n
+-- quot (n, n) = S O
+quot (n, m) = ifthenelse (m > n)  O  (S (quot (n - m, m)))
+-- quot (n, m) = S (quot (n - m, m))
 
--- rem :: (Nat, Nat) -> Nat
--- rem (_, O) = error "Division by zero isn't defined"
--- rem (n, S O) = O
--- rem (n, S (S m)) = 
+rem :: (Nat, Nat) -> Nat
+rem (_, O) = error "Division by zero isn't defined"
+rem (O, _) = O
+rem (n, m) = n - (quot (n, m) * m)
