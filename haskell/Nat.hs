@@ -9,6 +9,11 @@ data Nat where
   S :: Nat -> Nat
   deriving (Eq, Show)
 
+data ListNat where
+  Empty :: ListNat
+  Cons :: Nat -> ListNat -> ListNat
+  deriving (Eq, Show)
+
 o, so, sso, ssso :: Nat
 o = O
 so = S o
