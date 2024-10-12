@@ -1,17 +1,15 @@
+{-# LANGUAGE GADTs #-}
+
 module Nat where
 
-import Prelude hiding (Num(..), Bool(..), (^), pred, min, (<), (<=), max, (>), (>=), (==), div, quot, rem)
+import Prelude(Eq(..), Show(..), fst, snd, undefined)
+-- import Prelude hiding (Num(..), Bool(..), (^), pred, min, (<), (<=), max, (>), (>=), (==), div, quot, rem)
 
 import Bool
 
 data Nat where
   O :: Nat
   S :: Nat -> Nat
-  deriving (Eq, Show)
-
-data ListNat where
-  Empty :: ListNat
-  Cons :: Nat -> ListNat -> ListNat
   deriving (Eq, Show)
 
 o, so, sso, ssso :: Nat
@@ -89,25 +87,34 @@ O >= _ = False
 _ >= O = True
 S n >= S m = n >= m
 
-(==) :: Nat -> Nat -> Bool
--- n == n = True
-S n == S m = n == m
-O == O = True
-O == _ = False
+(===) :: Nat -> Nat -> Bool
+O === O = True
+O === _ = False
+S n === S m = n === m
 
 div :: (Nat, Nat) -> (Nat, Nat)
-div (_, O) = error "Division by zero isn't defined"
+div (_, O) = undefined -- error "Division by zero isn't defined"
 div (n, m) = (quot (n, m), rem (n, m))
 
 quot :: (Nat, Nat) -> Nat
-quot (n, O) = error "Division by zero isn't defined"
+quot (n, O) = undefined -- error "Division by zero isn't defined"
 quot (O, n) = O
 quot (n, S O) = n
--- quot (n, n) = S O
 quot (n, m) = ifthenelse (m > n)  O  (S (quot (n - m, m)))
--- quot (n, m) = S (quot (n - m, m))
 
 rem :: (Nat, Nat) -> Nat
-rem (_, O) = error "Division by zero isn't defined"
+rem (_, O) = undefined -- error "Division by zero isn't defined"
 rem (O, _) = O
 rem (n, m) = n - (quot (n, m) * m)
+
+div' :: (Nat, Nat) -> (Nat, Nat)
+div' (_, O) = undefined
+div' (O, _) = (O, O)
+div' (n, S O) = (n, O)
+div' (n, m) = ifthenelse (m > n) (O, n) (S (fst (div (n - m, m))), snd (div (n - m, m)))
+
+quot' :: (Nat, Nat) -> Nat
+quot' (n, m) = fst (div (n, m))
+
+rem' :: (Nat, Nat) -> Nat
+rem' (n, m) = snd (div (n, m))
