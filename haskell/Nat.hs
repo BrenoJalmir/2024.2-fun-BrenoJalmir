@@ -95,8 +95,8 @@ S n >= S m = n >= m
 
 (===) :: Nat -> Nat -> Bool
 O === O = True
-O === _ = False
 S n === S m = n === m
+_ === _ = False
 
 div :: (Nat, Nat) -> (Nat, Nat)
 div (_, O) = undefined
@@ -139,3 +139,11 @@ gcd (n, m) =
   ifthenelse (m > n)
   (gcd (m, n))
   (gcd (m, rem (n, m)))
+
+lcm :: (Nat, Nat) -> Nat
+lcm (_, O) = O
+lcm (_, S O) = S O
+lcm (n, m) = 
+  ifthenelse (rem (n, m) === O)
+  (max (n, m))
+  (n * m)
