@@ -146,4 +146,4 @@ lcm (_, S O) = S O
 lcm (n, m) = 
   ifthenelse (rem (n, m) === O)
   (max (n, m))
-  (n * m)
+  (quot (n * m, gcd (n, m)))
