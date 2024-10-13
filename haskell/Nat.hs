@@ -2,7 +2,7 @@
 
 module Nat where
 
-import Prelude(Eq(..), Show(..), fst, snd, undefined)
+import Prelude(Eq(..), Show(..), undefined)
 -- import Prelude hiding (Num(..), Bool(..), (^), pred, min, (<), (<=), max, (>), (>=), (==), div, quot, rem)
 
 import Bool
@@ -11,6 +11,12 @@ data Nat where
   O :: Nat
   S :: Nat -> Nat
   deriving (Eq, Show)
+
+fst :: (a, a) -> a
+fst (a, b) = a
+
+snd :: (a, a) -> a
+snd (a, b) = b
 
 o, so, sso, ssso :: Nat
 o = O
@@ -93,28 +99,43 @@ O === _ = False
 S n === S m = n === m
 
 div :: (Nat, Nat) -> (Nat, Nat)
-div (_, O) = undefined -- error "Division by zero isn't defined"
-div (n, m) = (quot (n, m), rem (n, m))
+div (_, O) = undefined
+div (O, _) = (O, O)
+div (n, S O) = (n, O)
+div (n, m) = 
+  ifthenelse (m > n)
+    (O, n)
+    (let (q', r') = div (n - m, m)
+      in (S q', r'))
 
 quot :: (Nat, Nat) -> Nat
-quot (n, O) = undefined -- error "Division by zero isn't defined"
-quot (O, n) = O
-quot (n, S O) = n
-quot (n, m) = ifthenelse (m > n)  O  (S (quot (n - m, m)))
+quot (n, m) = fst (div (n, m))
 
 rem :: (Nat, Nat) -> Nat
-rem (_, O) = undefined -- error "Division by zero isn't defined"
-rem (O, _) = O
-rem (n, m) = n - (quot (n, m) * m)
-
-div' :: (Nat, Nat) -> (Nat, Nat)
-div' (_, O) = undefined
-div' (O, _) = (O, O)
-div' (n, S O) = (n, O)
-div' (n, m) = ifthenelse (m > n) (O, n) (S (fst (div (n - m, m))), snd (div (n - m, m)))
+rem (n, m) = snd (div (n, m))
 
 quot' :: (Nat, Nat) -> Nat
-quot' (n, m) = fst (div (n, m))
+quot' (n, O) = undefined -- error "Division by zero isn't defined"
+quot' (O, n) = O
+quot' (n, S O) = n
+quot' (n, m) = 
+  ifthenelse (m > n)
+  O
+  (S (quot' (n - m, m)))
 
 rem' :: (Nat, Nat) -> Nat
-rem' (n, m) = snd (div (n, m))
+rem' (_, O) = undefined -- error "Division by zero isn't defined"
+rem' (O, _) = O
+rem' (n, m) = n - (quot' (n, m) * m)
+
+div' :: (Nat, Nat) -> (Nat, Nat)
+-- div' (_, O) = undefined -- error "Division by zero isn't defined"
+div' (n, m) = (quot' (n, m), rem' (n, m))
+
+gcd :: (Nat, Nat) -> Nat
+gcd (n, O) = n
+gcd (n, S O) = S O
+gcd (n, m) = 
+  ifthenelse (m > n)
+  (gcd (m, n))
+  (gcd (m, rem (n, m)))
