@@ -52,8 +52,8 @@ pred O = O
 pred (S n) = n
 
 fact :: Nat -> Nat
-fact O = S O
 fact (S n) = S n * fact n
+fact _ = S O
 
 fib :: Nat -> Nat
 fib (S (S n)) = fib (S n) + fib n
@@ -65,15 +65,13 @@ min (O, _) = O
 min (S n, S m) = S (min (n, m))
 
 (<) :: Nat -> Nat -> Bool
-O < O = False
 _ < O = False
 O < _ = True
 S n < S m = n < m
 
 (<=) :: Nat -> Nat -> Bool
-O <= O = True
-_ <= O = False
 O <= _ = True
+_ <= O = False
 S n <= S m = n <= m
 
 max :: (Nat, Nat) -> Nat
@@ -82,15 +80,13 @@ max (O, n) = n
 max (S n, S m) = S (max (n, m))
 
 (>) :: Nat -> Nat -> Bool
-O > O = False
 O > _ = False
 _ > O = True
 S n > S m = n > m
 
 (>=) :: Nat -> Nat -> Bool
-O >= O = True
-O >= _ = False
 _ >= O = True
+O >= _ = False
 S n >= S m = n >= m
 
 (===) :: Nat -> Nat -> Bool
@@ -114,23 +110,23 @@ quot (n, m) = fst (div (n, m))
 rem :: (Nat, Nat) -> Nat
 rem (n, m) = snd (div (n, m))
 
-quot' :: (Nat, Nat) -> Nat
-quot' (n, O) = undefined -- error "Division by zero isn't defined"
-quot' (O, n) = O
-quot' (n, S O) = n
-quot' (n, m) = 
-  ifthenelse (m > n)
-  O
-  (S (quot' (n - m, m)))
+-- quot' :: (Nat, Nat) -> Nat
+-- quot' (n, O) = undefined -- error "Division by zero isn't defined"
+-- quot' (O, n) = O
+-- quot' (n, S O) = n
+-- quot' (n, m) = 
+--   ifthenelse (m > n)
+--   O
+--   (S (quot' (n - m, m)))
 
-rem' :: (Nat, Nat) -> Nat
-rem' (_, O) = undefined -- error "Division by zero isn't defined"
-rem' (O, _) = O
-rem' (n, m) = n - (quot' (n, m) * m)
+-- rem' :: (Nat, Nat) -> Nat
+-- rem' (_, O) = undefined -- error "Division by zero isn't defined"
+-- rem' (O, _) = O
+-- rem' (n, m) = n - (quot' (n, m) * m)
 
-div' :: (Nat, Nat) -> (Nat, Nat)
--- div' (_, O) = undefined -- error "Division by zero isn't defined"
-div' (n, m) = (quot' (n, m), rem' (n, m))
+-- div' :: (Nat, Nat) -> (Nat, Nat)
+-- -- div' (_, O) = undefined -- error "Division by zero isn't defined"
+-- div' (n, m) = (quot' (n, m), rem' (n, m))
 
 gcd :: (Nat, Nat) -> Nat
 gcd (n, O) = n
