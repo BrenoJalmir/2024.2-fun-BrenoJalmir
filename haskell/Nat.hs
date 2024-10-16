@@ -18,11 +18,13 @@ fst (a, b) = a
 snd :: (a, a) -> a
 snd (a, b) = b
 
-o, so, sso, ssso :: Nat
+o, so, sso, ssso, sssso, ssssso :: Nat
 o = O
 so = S o
 sso = S so
 ssso = S sso
+sssso = S ssso
+ssssso = S sssso
 
 (+) :: Nat -> Nat -> Nat
 n + O = n
