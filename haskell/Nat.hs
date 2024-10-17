@@ -2,7 +2,7 @@
 
 module Nat where
 
-import Prelude(Eq(..), Show(..), undefined)
+import Prelude(Eq(..), Show(..), (++), undefined)
 -- import Prelude hiding (Num(..), Bool(..), (^), pred, min, (<), (<=), max, (>), (>=), (==), div, quot, rem)
 
 import Bool
@@ -10,7 +10,26 @@ import Bool
 data Nat where
   O :: Nat
   S :: Nat -> Nat
-  deriving (Eq, Show)
+  deriving (Eq)
+
+instance Show Nat where
+  show O = "O"
+  show (S n) = "S" ++ show n
+
+  -- Derived Show below
+  -- show O = "O"
+  -- show (S n) = "S (" ++ show n ++ ")"
+
+-- instance Eq Nat where
+--   O == O = True
+--   S n == S m = n == m
+--   _ == _ = False
+
+-- instance Num Nat where
+--   (+) = plus
+--   (-) = monus
+--   (*) = times
+--   (^) = power
 
 fst :: (a, a) -> a
 fst (a, b) = a
@@ -26,23 +45,32 @@ ssso = S sso
 sssso = S ssso
 ssssso = S sssso
 
+-- plus :: Num Nat => Nat -> Nat -> Nat
+-- plus n O = n
+-- plus n (S m) = S (plus n m)
 (+) :: Nat -> Nat -> Nat
 n + O = n
 n + S m = S (n + m)
 
 monus :: Nat -> Nat -> Nat
 monus n O = n
-monus n (S m) = pred (n - m)
+monus n (S m) = pred (monus n m)
 
 (-) :: Nat -> Nat -> Nat
 (-) = monus
 -- n - O = n
 -- n - S m = pred (n - m)
 
+-- times :: Nat -> Nat -> Nat
+-- times _ O = O
+-- times n (S m) = times n m + n
 (*) :: Nat -> Nat -> Nat
 _ * O = O
 n * S m = (n * m) + n
 
+-- power :: Nat -> Nat -> Nat
+-- power _ O = S O
+-- power n (S m) = power n m * n
 (^) :: Nat -> Nat -> Nat
 _ ^ O = S O
 n ^ S m = (n ^ m) * n
