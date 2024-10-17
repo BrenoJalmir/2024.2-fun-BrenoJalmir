@@ -26,7 +26,8 @@ data Bool = False | True
 
 instance Show Bool where
 
-    show = undefined
+    show True = "True"
+    show False = "False"
 
 instance Enum Bool where
 
@@ -58,7 +59,7 @@ infixr 2 /|\
 -- NOR (aka: Peirce arrow or Quine dagger)
 (\|/) :: Bool -> Bool -> Bool
 False \|/ False = True
-_ \|/ _ = True
+_ \|/ _ = False
 
 infixr 2 \|/
 
