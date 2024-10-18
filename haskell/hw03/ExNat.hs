@@ -55,11 +55,11 @@ instance Ord Nat where
 
     min O _ = O
     min _ O = O
-    min (S n) (S m) = min n m
+    min (S n) (S m) = S (min n m)
 
     max n O = n
     max O n = n
-    max (S n) (S m) = max n m
+    max (S n) (S m) = S (max n m)
 
 
 ----------------------------------------------------------------
@@ -84,6 +84,14 @@ odd :: Nat -> Bool
 odd O = False
 odd (S O) = True
 odd (S (S n)) = odd n 
+
+-- o, so, sso, ssso, sssso, ssssso :: Nat
+-- o = O
+-- so = S o
+-- sso = S so
+-- ssso = S sso
+-- sssso = S ssso
+-- ssssso = S sssso
 
 ----------------------------------------------------------------
 -- operations
@@ -150,7 +158,10 @@ divides = (<|>)
 -- x `absDiff` y = |x - y|
 -- (Careful here: this - is the real minus operator!)
 absDiff :: Nat -> Nat -> Nat
-absDiff = undefined
+absDiff n m = 
+  if max n m == n
+  then n - m
+  else m - n
 
 (|-|) = absDiff
 
@@ -162,12 +173,16 @@ factorial (S n) = S n <*> factorial n
 sg :: Nat -> Nat
 sg O = O
 sg n = S O
-sg _ = error "Negative number in Nat"
+-- sg _ = error "Negative number in Nat"
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
-lo = undefined
-
+-- lo O _ = error "?"
+-- lo (S O) (S O) = S O
+lo (S (S n)) m = 
+  if max (S (S n)) m == S (S n) && S (S n) /= m
+  then O
+  else S (lo (S (S n)) (m </> S (S n)))
 
 ----------------------------------------------------------------
 -- Num & Integral fun
