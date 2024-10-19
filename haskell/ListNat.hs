@@ -6,60 +6,71 @@ import Nat
 
 data ListNat where
   Nil :: ListNat
-  Cons :: Nat -> ListNat -> ListNat
+  (:>) :: Nat -> ListNat -> ListNat
   deriving (Eq, Show)
 
 lista, lista2 :: ListNat
-lista = Cons ssso (Cons sso (Cons so (Cons O Nil)))
-lista2 = Cons sso (Cons (sssso * sso) (Cons ssso Nil))
--- lista = Cons ssssso (Cons sso (Cons ssso (Cons sssso Nil)))
--- lista2 = Cons ssso (Cons sso (Cons so Nil))
+-- lista = ssso :> (sso :> (so :> (O :> Nil)))
+lista = sso :> (so :> Nil)
+lista2 = sso :> ((sssso * sso) :> (ssso :> Nil))
+-- lista = ssssso :> (sso :> (ssso :> (sssso Nil)))
+-- lista2 = ssso :> (sso :> (so Nil))
+
+head :: ListNat -> Nat
+head (n :> _) = n
+
+tails :: ListNat -> ListNat
+tails (_ :> ns) = ns
 
 length :: ListNat -> Nat
 length Nil = O
-length (Cons _ ns) = length ns
+length (_ :> ns) = length ns
 
 sum :: ListNat -> Nat
 sum Nil = O
-sum (Cons n ns) = n + sum ns
+sum (n :> ns) = n + sum ns
 
 product :: ListNat -> Nat
 product Nil = S O
-product (Cons n ns) = n * product ns
+product (n :> ns) = n * product ns
 
 addNat :: Nat -> ListNat -> ListNat
 addNat _ Nil = Nil
-addNat n (Cons m ms) = Cons (n + m) (addNat n ms)
+addNat n (m :> ms) = (n + m) :> addNat n ms
 
 mulNat :: Nat -> ListNat -> ListNat
 mulNat _ Nil = Nil
-mulNat n (Cons m ms) = Cons (n * m) (mulNat n ms)
+mulNat n (m :> ms) = (n * m) :> mulNat n ms
 
 expNat :: Nat -> ListNat -> ListNat
 expNat _ Nil = Nil
-expNat n (Cons m ms) = Cons (m ^ n) (expNat n ms)
+expNat n (m :> ms) = (m ^ n) :> expNat n ms
 
 powNat :: Nat -> ListNat -> ListNat
 powNat _ Nil = Nil
-powNat n (Cons m ms) = Cons (n ^ m) (powNat n ms)
+powNat n (m :> ms) = (n ^ m) :> powNat n ms
 
 pwAdd :: ListNat -> ListNat -> ListNat
 pwAdd ns Nil = Nil
-pwAdd (Cons n ns) (Cons m ms) = Cons (n + m) (pwAdd ns ms)
+pwAdd (n :> ns) (m :> ms) = (n + m) :> pwAdd ns ms
 
 pwMul :: ListNat -> ListNat -> ListNat
 pwMul ns Nil = Nil
-pwMul (Cons n ns) (Cons m ms) = Cons (n * m) (pwMul ns ms)
+pwMul (n :> ns) (m :> ms) = (n * m) :> pwMul ns ms
 
 pwExp :: ListNat -> ListNat -> ListNat
 pwExp ns Nil = Nil
-pwExp (Cons n ns) (Cons m ms) = Cons (n ^ m) (pwExp ns ms)
+pwExp (n :> ns) (m :> ms) = (n ^ m) :> pwExp ns ms
+
+repeat :: Nat -> Nat -> ListNat -> ListNat
+repeat (S O) x ms = x :> ms
+repeat (S n) x ms = repeat n x (x :> ms)
 
 stretch :: Nat -> ListNat -> ListNat
-stretch O _ = Nil
 stretch (S O) ns = ns
--- todo recursive case
+stretch (S n) (m :> Nil) = repeat n m (m :> Nil)
+stretch (S n) (m :> ms) = repeat (S n) m (stretch (S n) ms)
 
 countdown :: Nat -> ListNat
-countdown O = Cons O Nil
-countdown (S n) = Cons (S n) (countdown n)
+countdown O = O :> Nil
+countdown (S n) = S n :> countdown n
