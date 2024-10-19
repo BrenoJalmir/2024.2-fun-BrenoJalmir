@@ -148,6 +148,8 @@ n <%> m =
   -- else n - n </> m <*> m 
   else (n <-> m) <%> m
 
+infix 3 <%>
+
 -- divides
 (<|>) :: Nat -> Nat -> Bool
 _ <|> O = error "Division by zero"
@@ -177,8 +179,6 @@ sg n = S O
 
 -- lo b a is the floor of the logarithm base b of a
 lo :: Nat -> Nat -> Nat
--- lo O _ = error "?"
--- lo (S O) (S O) = S O
 lo (S (S n)) m = 
   if max (S (S n)) m == S (S n) && S (S n) /= m
   then O
@@ -192,10 +192,14 @@ lo (S (S n)) m =
 -- Do NOT use the following functions in the definitions above!
 
 toNat :: Integral a => a -> Nat
-toNat = undefined
+toNat n
+  | n == 0    = O
+  | otherwise = S (toNat (n - 1))
 
 fromNat :: Integral a => Nat -> a
-fromNat = undefined
+fromNat n 
+  |n == O = 0
+  |otherwise = fromNat (n - 1) + 1
 
 
 -- Voilá: we can now easily make Nat an instance of Num.
@@ -207,7 +211,7 @@ instance Num Nat where
     abs n = n
     signum = sg
     fromInteger x
-      | x < 0     = undefined
-      | x == 0    = undefined
-      | otherwise = undefined
+      | x < 0     = error "Negative Nat"
+      | x == 0    = toNat x
+      | otherwise = toNat x
 
