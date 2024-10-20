@@ -57,29 +57,43 @@ write [u,v]     for our u `Cons` (v `Cons` Nil)
 
 -}
 
+import ExNat
+
+lista, lista2 :: [Nat]
+lista = [sso, so]
+lista2 = [sso, sssso * sso, ssso]
+
 head :: [a] -> a
-head = undefined
+head [] = error "head of Nil"
+head (n : _) = n
 
 tail :: [a] -> [a]
-tail = undefined
+tail [] = error "tail of Nil"
+tail (_ : ns) = ns
 
 null :: [a] -> Bool
-null = undefined
+null [] = True
+null _ = False
 
 length :: Integral i => [a] -> i
-length = undefined
+length [] = 0
+length (n:ns) = succ (length ns)
 
 sum :: Num a => [a] -> a
-sum = undefined
+sum [] = 0
+sum (n:ns) = n + sum ns
 
 product :: Num a => [a] -> a
-product = undefined
+product [] = 1
+product (n:ns) = n * product ns
 
 reverse :: [a] -> [a]
-reverse = undefined
+reverse [n] = [n]
+reverse (n:ns) = [n] ++ reverse ns -- don't use vs code sugestion, it doesn't work
 
 (++) :: [a] -> [a] -> [a]
-(++) = undefined
+ns ++ [] = ns
+(n:ns) ++ (m:ms) = m:(n:ns) ++ ms
 
 -- right-associative for performance!
 -- (what?!)
@@ -87,7 +101,9 @@ infixr 5 ++
 
 -- (snoc is cons written backwards)
 snoc :: a -> [a] -> [a]
-snoc = undefined
+snoc n [] = [n]
+snoc n (m:ms) = m:snoc n ms
+-- snoc n ms = reverse (n : reverse ms)
 
 (<:) :: [a] -> a -> [a]
 (<:) = flip snoc
