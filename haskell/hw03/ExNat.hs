@@ -39,7 +39,7 @@ instance Show Nat where
 
 instance Eq Nat where
 
-    (==) O O = True
+    O == O = True
     (S n) == (S m) = n == m
     _ == _ = False
 

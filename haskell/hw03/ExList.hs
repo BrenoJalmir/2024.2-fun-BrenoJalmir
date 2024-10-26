@@ -178,9 +178,20 @@ infixl 5 +++
 
 -- transpose
 
+-- Aux's func's to palindrome
+normalizeString :: String -> String
+normalizeString ss = [C.toLower s | s <- ss, C.isLetter s]
+
+pwStringChecker :: String -> String -> Bool
+pwStringChecker "" "" = True
+pwStringChecker "" _ = False
+pwStringChecker _ "" = False
+pwStringChecker (s:ss) (z:zs) = s == z && pwStringChecker ss zs
+
 -- checks if the letters of a phrase form a palindrome (see below for examples)
 palindrome :: String -> Bool
-palindrome = undefined
+palindrome "" = True
+palindrome cs = pwStringChecker (normalizeString cs) (reverse (normalizeString cs))
 
 {-
 
