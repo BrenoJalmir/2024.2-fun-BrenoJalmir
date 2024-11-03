@@ -88,12 +88,12 @@ product [] = 1
 product (n:ns) = n * product ns
 
 reverse :: [a] -> [a]
-reverse [n] = [n]
-reverse (n:ns) = [n] ++ reverse ns -- don't use vs code sugestion, it doesn't work
+reverse [] = []
+reverse (a:as) = reverse as ++ [a]
 
 (++) :: [a] -> [a] -> [a]
-ns ++ [] = ns
-(n:ns) ++ (m:ms) = m:(n:ns) ++ ms
+[] ++ as = as
+(a:as) ++ bs = a:(as ++ bs)
 
 -- right-associative for performance!
 -- (what?!)
