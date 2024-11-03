@@ -2,40 +2,65 @@
 
 module Nat where
 
-import Prelude(Eq(..), Show(..), (++), undefined, error)
--- import Prelude hiding (Num(..), Bool(..), (^), pred, min, (<), (<=), max, (>), (>=), (==), div, quot, rem)
-
-import Bool
+import Prelude hiding ((<*>), (<|>), quot, rem, gcd, lcm, curry, uncurry)
 
 data Nat where
   O :: Nat
   S :: Nat -> Nat
-  deriving (Eq)
 
 instance Show Nat where
-  show O = "O"
-  show (S n) = "S" ++ show n
-
   -- Derived Show below
   -- show O = "O"
   -- show (S n) = "S (" ++ show n ++ ")"
 
--- instance Eq Nat where
---   O == O = True
---   S n == S m = n == m
---   _ == _ = False
+  show O = "O"
+  show (S n) = "S" ++ show n
 
--- instance Num Nat where
---   (+) = plus
---   (-) = monus
---   (*) = times
---   (^) = power
+instance Eq Nat where
+  -- (===) :: Nat -> Nat -> Bool
+  -- O === O = True
+  -- S n === S m = n === m
+  -- _ === _ = False
 
-fst :: (a, a) -> a
-fst (a, b) = a
+  O == O = True
+  S n == S m = n == m
+  _ == _ = False
 
-snd :: (a, a) -> a
-snd (a, b) = b
+instance Ord Nat where
+
+  O <= _ = True
+  _ <= O = False
+  S n <= S m = n <= m
+
+  -- (<) :: Nat -> Nat -> Bool
+  -- _ < O = False
+  -- O < _ = True
+  -- S n < S m = n < m
+
+  -- (<=) :: Nat -> Nat -> Bool
+  -- O <= _ = True
+  -- _ <= O = False
+  -- S n <= S m = n <= m
+  
+  -- min :: Nat -> Nat -> Nat
+  min _ O = O
+  min O _ = O
+  min (S n) (S m) = S (min n m)
+
+  -- (>) :: Nat -> Nat -> Bool
+  -- O > _ = False
+  -- _ > O = True
+  -- S n > S m = n > m
+
+  -- (>=) :: Nat -> Nat -> Bool
+  -- _ >= O = True
+  -- O >= _ = False
+  -- S n >= S m = n >= m
+
+  -- max :: (Nat, Nat) -> Nat
+  max n O = n
+  max O n = n
+  max (S n) (S m) = S (max n m)
 
 o, so, sso, ssso, sssso, ssssso :: Nat
 o = O
@@ -45,41 +70,35 @@ ssso = S sso
 sssso = S ssso
 ssssso = S sssso
 
--- plus :: Num Nat => Nat -> Nat -> Nat
--- plus n O = n
--- plus n (S m) = S (plus n m)
-(+) :: Nat -> Nat -> Nat
-n + O = n
-n + S m = S (n + m)
+-- fst :: (a, a) -> a
+-- fst (a, b) = a
 
-monus :: Nat -> Nat -> Nat
-monus n O = n
-monus n (S m) = pred (monus n m)
+-- snd :: (a, a) -> a
+-- snd (a, b) = b
 
-(-) :: Nat -> Nat -> Nat
-(-) = monus
--- n - O = n
--- n - S m = pred (n - m)
+isZero :: Nat -> Bool
+isZero O = True
+isZero _ = False
 
--- times :: Nat -> Nat -> Nat
--- times _ O = O
--- times n (S m) = times n m + n
-(*) :: Nat -> Nat -> Nat
-_ * O = O
-n * S m = (n * m) + n
+(<+>) :: Nat -> Nat -> Nat
+n <+> O = n
+n <+> S m = S (n <+> m)
 
--- power :: Nat -> Nat -> Nat
--- power _ O = S O
--- power n (S m) = power n m * n
-(^) :: Nat -> Nat -> Nat
-_ ^ O = S O
-n ^ S m = (n ^ m) * n
+(<->) :: Nat -> Nat -> Nat
+n <-> O = n
+n <-> (S m) = predNat (n <-> m)
 
-double = (*) sso
+(<*>) :: Nat -> Nat -> Nat
+_ <*> O = O
+n <*> S m = (n <*> m) <+> n
 
-pred :: Nat -> Nat
-pred O = O
-pred (S n) = n
+(<^>) :: Nat -> Nat -> Nat
+_ <^> O = S O
+n <^> S m = (n <^> m) * n
+
+predNat :: Nat -> Nat
+predNat O = O
+predNat (S n) = n
 
 fact :: Nat -> Nat
 fact (S n) = S n * fact n
@@ -89,56 +108,37 @@ fib :: Nat -> Nat
 fib (S (S n)) = fib (S n) + fib n
 fib n = n
 
-min :: (Nat, Nat) -> Nat
-min (_, O) = O
-min (O, _) = O
-min (S n, S m) = S (min (n, m))
+-- divNat :: (Nat, Nat) -> (Nat, Nat)
+-- divNat (_, O) = undefined
+-- divNat (O, _) = (O, O)
+-- divNat (n, S O) = (n, O)
+-- divNat (n, m) = 
+--   ifthenelse (m > n)
+--     (O, n)
+--     (let (q', r') = divNat (n - m, m)
+--       in (S q', r'))
 
-(<) :: Nat -> Nat -> Bool
-_ < O = False
-O < _ = True
-S n < S m = n < m
+-- quot :: (Nat, Nat) -> Nat
+-- quot (n, m) = fst (divNat (n, m))
 
-(<=) :: Nat -> Nat -> Bool
-O <= _ = True
-_ <= O = False
-S n <= S m = n <= m
+-- rem :: (Nat, Nat) -> Nat
+-- rem (n, m) = snd (divNat (n, m))
 
-max :: (Nat, Nat) -> Nat
-max (n, O) = n
-max (O, n) = n
-max (S n, S m) = S (max (n, m))
+-- quotient
+quot :: Nat -> Nat -> Nat
+quot _ O = error "Division by zero"
+quot n m = 
+  if max n m == n
+  then S ((n <-> m) `quot` m)
+  else O
 
-(>) :: Nat -> Nat -> Bool
-O > _ = False
-_ > O = True
-S n > S m = n > m
-
-(>=) :: Nat -> Nat -> Bool
-_ >= O = True
-O >= _ = False
-S n >= S m = n >= m
-
-(===) :: Nat -> Nat -> Bool
-O === O = True
-S n === S m = n === m
-_ === _ = False
-
-div :: (Nat, Nat) -> (Nat, Nat)
-div (_, O) = undefined
-div (O, _) = (O, O)
-div (n, S O) = (n, O)
-div (n, m) = 
-  ifthenelse (m > n)
-    (O, n)
-    (let (q', r') = div (n - m, m)
-      in (S q', r'))
-
-quot :: (Nat, Nat) -> Nat
-quot (n, m) = fst (div (n, m))
-
-rem :: (Nat, Nat) -> Nat
-rem (n, m) = snd (div (n, m))
+-- remainder
+rem :: Nat -> Nat -> Nat
+rem _ O = error "Division by zero"
+rem n m = 
+  if min n m == n
+  then n
+  else (n <-> m) `rem` m
 
 -- quot' :: (Nat, Nat) -> Nat
 -- quot' (n, O) = undefined -- error "Division by zero isn't defined"
@@ -158,67 +158,70 @@ rem (n, m) = snd (div (n, m))
 -- -- div' (_, O) = undefined -- error "Division by zero isn't defined"
 -- div' (n, m) = (quot' (n, m), rem' (n, m))
 
-gcd :: (Nat, Nat) -> Nat
-gcd (n, O) = n
-gcd (n, S O) = S O
-gcd (n, m) = 
-  ifthenelse (m > n)
-  (gcd (m, n))
-  (gcd (m, rem (n, m)))
+gcd :: Nat -> Nat -> Nat
+gcd n O = n
+gcd n (S O) = S O
+gcd n m = 
+  if m > n
+  then gcd m n
+  else gcd m (rem n m)
 
-lcm :: (Nat, Nat) -> Nat
-lcm (_, O) = O
-lcm (_, S O) = S O
-lcm (n, m) = 
-  ifthenelse (rem (n, m) === O)
-  (max (n, m))
-  (quot (n * m, gcd (n, m)))
+lcm :: Nat -> Nat -> Nat
+lcm _ O = O
+lcm _ (S O) = S O
+lcm n m = 
+  if rem n m == O
+  then max n m
+  else quot (n * m) (gcd n m)
+
+(<|>) :: Nat -> Nat -> Bool
+_ <|> O = error "Division by zero"
+n <|> m = isZero (rem n m)
+
+-- x `absDiff` y = |x - y|
+-- (Careful here: this - is the real minus operator!)
+absDiff :: Nat -> Nat -> Nat
+absDiff n m = 
+  if max n m == n
+  then n <-> m
+  else m <-> n
+
+(|-|) = absDiff
+
+-- signum of a number (-1, 0, or 1)
+sg :: Nat -> Nat
+sg O = O
+sg n = S O
+-- sg _ = error "Negative number in Nat"
+
+-- lo b a is the floor of the logarithm base b of a
+lo :: Nat -> Nat -> Nat
+lo (S (S n)) m = 
+  if max (S (S n)) m == S (S n) && S (S n) /= m
+  then O
+  else S (lo (S (S n)) (m `quot` S (S n)))
+
+toNat :: Integral a => a -> Nat
+toNat 0 = O
+toNat i = S (toNat (i - 1))
+
+fromNat :: Integral a => Nat -> a
+fromNat O = 0
+fromNat n = succ (fromNat (n - 1))
+
+instance Num Nat where
+  (+) = (<+>)
+  (*) = (<*>)
+  (-) = (<->)
+  abs n = n
+  signum = sg
+  fromInteger x
+    | x < 0     = error "Negative Nat"
+    | x == 0    = toNat x
+    | otherwise = toNat x
+
+curry :: ((a, b) -> c) -> a -> b -> c
+curry f a b = f (a, b)
 
 uncurry :: (a -> b -> c) -> (a, b) -> c
 uncurry f (a, b) = f a b
-
-zip' :: [a] -> [b] -> [(a, b)]
-zip' [] _ = []
-zip' _ [] = []
-zip' (a:as) (b:bs) = (a, b):zip' as bs
-
-zip'' :: [a] -> [b] -> [(a, b)]
-zip'' = zW (, )
-
-zW :: (a -> b -> c) -> [a] -> [b] -> [c]
-zW _ [] _ = []
-zW _ _ [] = []
-zW op (a:as) (b:bs) = (a `op` b):zW op as bs
-
-zW' :: (a -> b -> c) -> [a] -> [b] -> [c]
-zW' op as bs = map (uncurry op) (zip' as bs)
-
-head :: [a] -> a
-head [] = error "head of null"
-head (a:as) = a
-
--- (errado) feito usando desconstrutor
--- pairs :: [a] -> [(a, a)]
--- pairs (a:[]) = []
--- pairs (a:as) = (a, head as):pairs as
-
-pairs :: [a] -> [(a, a)]
-pairs [a] = []
-pairs (a:a':as) = (a, a'):pairs (a':as)
-
-countdown :: Nat -> [Nat]
-countdown O = [O]
-countdown (S n) = S n:countdown n
-
-map :: (a -> b) -> [a] -> [b]
-map _ [] = []
-map f (a:as) = f a: map f as
-
--- filter :: (p -> Bool) -> [a] -> [a]
--- filter _ [] = []
--- filter p (a:as)
---  | (p a) = a:filter p as
---  | otherwise = filter p as
-
--- (.) :: (b -> c) -> (a -> b) -> (a -> c)
--- f . g = map f (filter g)

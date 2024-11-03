@@ -145,10 +145,10 @@ _ <%> O = error "Division by zero"
 n <%> m = 
   if min n m == n
   then n
-  -- else n - n </> m <*> m 
+  -- else n - m </> m <*> m 
   else (n <-> m) <%> m
 
-infix 3 <%>
+infixl 3 <%>
 
 -- divides
 (<|>) :: Nat -> Nat -> Bool
@@ -162,8 +162,8 @@ divides = (<|>)
 absDiff :: Nat -> Nat -> Nat
 absDiff n m = 
   if max n m == n
-  then n - m
-  else m - n
+  then n <-> m
+  else m <-> n
 
 (|-|) = absDiff
 
