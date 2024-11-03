@@ -59,9 +59,9 @@ write [u,v]     for our u `Cons` (v `Cons` Nil)
 
 import ExNat
 
-lista, lista2 :: [Nat]
-lista = [sso, so]
-lista2 = [sso, sssso * sso, ssso]
+-- lista, lista2 :: [Nat]
+-- lista = [sso, so]
+-- lista2 = [sso, sssso * sso, ssso]
 
 head :: [a] -> a
 head [] = error "head of Nil"

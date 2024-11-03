@@ -2,7 +2,7 @@
 
 module Nat where
 
-import Prelude(Eq(..), Show(..), (++), undefined)
+import Prelude(Eq(..), Show(..), (++), undefined, error)
 -- import Prelude hiding (Num(..), Bool(..), (^), pred, min, (<), (<=), max, (>), (>=), (==), div, quot, rem)
 
 import Bool
@@ -173,3 +173,52 @@ lcm (n, m) =
   ifthenelse (rem (n, m) === O)
   (max (n, m))
   (quot (n * m, gcd (n, m)))
+
+uncurry :: (a -> b -> c) -> (a, b) -> c
+uncurry f (a, b) = f a b
+
+zip' :: [a] -> [b] -> [(a, b)]
+zip' [] _ = []
+zip' _ [] = []
+zip' (a:as) (b:bs) = (a, b):zip' as bs
+
+zip'' :: [a] -> [b] -> [(a, b)]
+zip'' = zW (, )
+
+zW :: (a -> b -> c) -> [a] -> [b] -> [c]
+zW _ [] _ = []
+zW _ _ [] = []
+zW op (a:as) (b:bs) = (a `op` b):zW op as bs
+
+zW' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zW' op as bs = map (uncurry op) (zip' as bs)
+
+head :: [a] -> a
+head [] = error "head of null"
+head (a:as) = a
+
+-- (errado) feito usando desconstrutor
+-- pairs :: [a] -> [(a, a)]
+-- pairs (a:[]) = []
+-- pairs (a:as) = (a, head as):pairs as
+
+pairs :: [a] -> [(a, a)]
+pairs [a] = []
+pairs (a:a':as) = (a, a'):pairs (a':as)
+
+countdown :: Nat -> [Nat]
+countdown O = [O]
+countdown (S n) = S n:countdown n
+
+map :: (a -> b) -> [a] -> [b]
+map _ [] = []
+map f (a:as) = f a: map f as
+
+-- filter :: (p -> Bool) -> [a] -> [a]
+-- filter _ [] = []
+-- filter p (a:as)
+--  | (p a) = a:filter p as
+--  | otherwise = filter p as
+
+-- (.) :: (b -> c) -> (a -> b) -> (a -> c)
+-- f . g = map f (filter g)

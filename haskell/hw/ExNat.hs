@@ -46,8 +46,8 @@ instance Eq Nat where
 instance Ord Nat where
 
     O <= _ = True
-    _ <= O = False
     (S n) <= (S m) = n <= m
+    _ <= O = False
 
     -- Ord does not REQUIRE defining min and max.
     -- Howevener, you should define them WITHOUT using (<=).
