@@ -15,19 +15,26 @@ ex5 = (Neg ex1) `Times` (Neg ex4)
 
 -- pretty printer
 pretty :: ArEx -> String
-pretty (Plus exp1 exp2) = "(" ++ pretty exp1 ++ " + " ++ pretty exp2 ++ ")"
-pretty (Times exp1 exp2) = "(" ++ pretty exp1 ++ " * " ++ pretty exp2 ++ ")"
+pretty (Plus e1 e2) = "(" ++ pretty e1 ++ " + " ++ pretty e2 ++ ")"
+pretty (Times e1 e2) = "(" ++ pretty e1 ++ " * " ++ pretty e2 ++ ")"
 pretty (Neg exp) = " (-" ++ pretty exp ++ ")"
 pretty (Atom n) =  show n
 
 -- eval evaluates an expression and returns its value
 eval :: ArEx -> Integer
-eval (Plus exp1 exp2) = eval exp1 + eval exp2
-eval (Times exp1 exp2) = eval exp1 * eval exp2
+eval (Plus e1 e2) = eval e1 + eval e2
+eval (Times e1 e2) = eval e1 * eval e2
 eval (Neg exp) = - eval exp
 eval (Atom n) = n
 
 -- step should make only 1 step of calculation on a given ArEx
 step :: ArEx -> ArEx
-step = undefined
+step ex@(Plus (Atom _) (Atom _)) = Atom $ eval ex
+step ex@(Times (Atom _) (Atom _)) = Atom $ eval ex
+step (Plus (Atom n) e2) = Plus (Atom n) $ step e2
+step (Times (Atom n) e2) = Times (Atom n) $ step e2
+step (Plus e1 e2) = Plus (step e1) e2
+step (Times e1 e2) = Times (step e1) e2
+step (Neg e) = Neg $ step e
+step (Atom n) = Atom n
 
