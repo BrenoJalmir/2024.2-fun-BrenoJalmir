@@ -1,8 +1,8 @@
-{-# LANGUAGE GADTs #-}
-
 module List where
 
-import Prelude hiding ((.), (++), length, foldr, foldl, flip, map, filter, reverse, zip)
+import Prelude hiding ((.), (++), head, tail, length, foldr, foldl, flip, map, filter, reverse, take, repeat, any, dropWhile, concat, replicate, zip, subseqs, init, inits)
+
+import Nat
 
 data List a where
   Nil :: List a
@@ -32,8 +32,8 @@ map f (a:as) = f a: map f as
 filter :: (a -> Bool) -> [a] -> [a]
 filter _ [] = []
 filter p (a:as)
- | p a = a:filter p as
- | otherwise = filter p as
+  | p a = a:filter p as
+  | otherwise = filter p as
 
 foldr :: (a -> a -> a) -> a -> [a] -> a
 foldr _ nEl [] = nEl
@@ -47,7 +47,7 @@ flip :: (a -> b -> c) -> b -> a -> c
 flip f b a = f a b
 
 (.) :: (b -> c) -> (a -> b) -> a -> c
-(f . g) a =  f $ g a
+(f . g) a =  f (g a)
 
 (.>) :: (a -> b) -> (b -> c) -> a -> c
 f .> g = g . f
@@ -81,6 +81,30 @@ xs +++ [y]    = xs <: y
 xs +++ (y:ys) = (xs +++ [y]) +++ ys
 -- xs +++ (y:ys) = (xs <: y) +++ ys
 
+take :: Nat -> [a] -> [a]
+take (S n) (a: as) = a:take n as
+take _ [] = []
+
+repeat :: a -> [a]
+repeat a = a:repeat a
+
+any :: (a -> Bool) -> [a] -> Bool
+any p = foldr (||) False . map p
+-- any p = foldr ((||) . p) False  -- erro por causa implementação do foldr 'simples'
+
+dropWhile :: (a -> Bool) -> [a] -> [a]
+dropWhile p as@(a:as')
+  | p a = dropWhile p as'
+  | otherwise = as
+
+concat :: [[a]] -> [a]
+-- concat [] = []
+concat = foldr (++) []
+
+replicate :: Nat -> a -> [a]
+replicate O _ = []
+replicate (S n) a = a:replicate n a
+
 zip :: [a] -> [b] -> [(a, b)]
 zip (a:as) (b:bs) = (a, b):zip as bs
 zip _ _ = []
@@ -89,6 +113,9 @@ zip _ _ = []
 zip' :: [a] -> [b] -> [(a, b)]
 zip' = zW (, )
 -- zip' = zW (\x y -> (x, y))
+
+subseqs :: [a] -> [[a]]
+subseqs = undefined
 
 -- zipWith
 zW :: (a -> b -> c) -> [a] -> [b] -> [c]
@@ -108,3 +135,14 @@ zW' op as bs = map (uncurry op) (zip as bs)
 pairs :: [a] -> [(a, a)]
 pairs [a] = []
 pairs (a:as@(a':as')) = (a, a'):pairs as
+
+init :: [a] -> [a]
+init as = reverse $ tail $ reverse as
+
+inits :: [a] -> [[a]]
+inits [] = [[]]
+inits as@(a:as') = inits (init as)<:as
+
+countdown :: Nat -> [Nat]
+countdown O = [O]
+countdown (S n) = n:countdown n

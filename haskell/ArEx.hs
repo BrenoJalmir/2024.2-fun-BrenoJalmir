@@ -1,5 +1,7 @@
 module ArEx where
 
+import Nat
+
 data ArEx where
   Plus :: ArEx -> ArEx -> ArEx
   Times :: ArEx -> ArEx -> ArEx
@@ -27,3 +29,6 @@ eval (Plus exp1 exp2) = eval exp1 + eval exp2
 eval (Times exp1 exp2) = eval exp1 * eval exp2
 eval (Neg exp) = - eval exp
 eval (Atom n) = n
+
+height :: ArEx -> Nat
+height = undefined
