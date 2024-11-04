@@ -2,7 +2,7 @@
 
 module Nat where
 
-import Prelude hiding ((<*>), (<|>), quot, rem, gcd, lcm, curry, uncurry)
+import Prelude hiding ((<*>), (<|>), quot, rem, gcd, lcm, odd)
 
 data Nat where
   O :: Nat
@@ -220,8 +220,9 @@ instance Num Nat where
     | x == 0    = toNat x
     | otherwise = toNat x
 
-curry :: ((a, b) -> c) -> a -> b -> c
-curry f a b = f (a, b)
+odd :: Nat -> Bool
+odd O = False
+odd (S O) = True
+odd (S (S n)) = odd n
 
-uncurry :: (a -> b -> c) -> (a, b) -> c
-uncurry f (a, b) = f a b
+
