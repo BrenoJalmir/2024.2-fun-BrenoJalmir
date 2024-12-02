@@ -90,11 +90,11 @@ n <-> (S m) = predNat (n <-> m)
 
 (<*>) :: Nat -> Nat -> Nat
 _ <*> O = O
-n <*> S m = (n <*> m) <+> n
+n <*> S m = n <+> (n <*> m)
 
 (<^>) :: Nat -> Nat -> Nat
 _ <^> O = S O
-n <^> S m = (n <^> m) * n
+n <^> S m = (n <^> m) <*> n
 
 predNat :: Nat -> Nat
 predNat O = O

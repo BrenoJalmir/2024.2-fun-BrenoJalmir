@@ -13,12 +13,18 @@ ex3 = Times ex1 ex2
 ex4 = Neg $ ex3 `Plus` ex1
 ex5 = (Neg ex1) `Times` (Neg ex4)
 
+prettyWithoutParentheses :: String -> String
+prettyWithoutParentheses ss = init $ tail ss
+
+prettyWithParentheses :: ArEx -> String
+prettyWithParentheses (Plus e1 e2) = "(" ++ prettyWithParentheses e1 ++ " + " ++ prettyWithParentheses e2 ++ ")"
+prettyWithParentheses (Times e1 e2) = "(" ++ prettyWithParentheses e1 ++ " * " ++ prettyWithParentheses e2 ++ ")"
+prettyWithParentheses (Neg exp) = "(-" ++ prettyWithParentheses exp ++ ")"
+prettyWithParentheses (Atom n) =  show n
+
 -- pretty printer
 pretty :: ArEx -> String
-pretty (Plus e1 e2) = "(" ++ pretty e1 ++ " + " ++ pretty e2 ++ ")"
-pretty (Times e1 e2) = "(" ++ pretty e1 ++ " * " ++ pretty e2 ++ ")"
-pretty (Neg exp) = " (-" ++ pretty exp ++ ")"
-pretty (Atom n) =  show n
+pretty = prettyWithoutParentheses . prettyWithParentheses
 
 -- eval evaluates an expression and returns its value
 eval :: ArEx -> Integer

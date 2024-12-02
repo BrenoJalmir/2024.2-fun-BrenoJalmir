@@ -1,6 +1,6 @@
 module List where
 
-import Prelude hiding ((.), (++), head, tail, length, foldr, foldl, flip, map, filter, reverse, take, repeat, any, dropWhile, concat, replicate, zip, subseqs, init, inits)
+import Prelude hiding ((.), (++), head, tail, length, foldr, foldl, flip, map, filter, reverse, take, drop, repeat, any, dropWhile, concat, replicate, zip, subseqs, init, inits)
 
 import Nat
 
@@ -47,7 +47,7 @@ flip :: (a -> b -> c) -> b -> a -> c
 flip f b a = f a b
 
 (.) :: (b -> c) -> (a -> b) -> a -> c
-(f . g) a =  f (g a)
+(f . g) a = f (g a)
 
 (.>) :: (a -> b) -> (b -> c) -> a -> c
 f .> g = g . f
@@ -83,7 +83,13 @@ xs +++ (y:ys) = (xs +++ [y]) +++ ys
 
 take :: Nat -> [a] -> [a]
 take (S n) (a: as) = a:take n as
+take O _ = []
 take _ [] = []
+
+drop :: Nat -> [a] -> [a]
+drop (S n) (a:as) = drop n as
+drop O as = as
+drop _ [] = []
 
 repeat :: a -> [a]
 repeat a = a:repeat a

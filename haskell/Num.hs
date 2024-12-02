@@ -5,4 +5,4 @@ class Num a where
   (*) :: a -> a -> a
   (^) :: a -> a -> a
   (-) :: a -> a -> a
-  -- O :: a
+  -- 0 :: a
