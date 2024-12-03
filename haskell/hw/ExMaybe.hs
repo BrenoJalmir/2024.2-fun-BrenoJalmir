@@ -18,7 +18,7 @@ fromJust _ = error "Just Nothing"
 
 fromMaybe :: a -> Maybe a -> a
 fromMaybe a Nothing = a
-fromMaybe a (Just b) = b
+fromMaybe _ (Just b) = b
 
 isJust :: Maybe a -> Bool
 isJust Nothing = False
@@ -29,18 +29,18 @@ isNothing Nothing = True
 isNothing _ = False
 
 mapMaybe :: (a -> b) -> (Maybe a -> Maybe b)
-mapMaybe f Nothing = Nothing
+mapMaybe _ Nothing = Nothing
 mapMaybe f (Just a) = Just (f a)
 
 justMap :: (a -> Maybe b) -> [a] -> [b]
-justMap f [] = []
+justMap _ [] = []
 justMap f (a:as)
   | isNothing $ f a = justMap f as
   | otherwise = fromJust (f a):justMap f as
 
 maybe :: b -> (a -> b) -> Maybe a -> b
-maybe b f Nothing = b
-maybe b f (Just a) = f a
+maybe b _ Nothing = b
+maybe _ f (Just a) = f a
 
 maybeToList :: Maybe a -> [a]
 maybeToList Nothing = []
@@ -52,7 +52,9 @@ listToMaybe (a:as) = Just a
 
 
 tryToModifyWith :: [Maybe (a -> a)] -> [a] -> [a]
-tryToModifyWith (mf:mfs) = case mf of
+tryToModifyWith [] = id
+tryToModifyWith (mf:mfs) = 
+  case mf of
   Nothing -> tryToModifyWith mfs
   Just mf -> tryToModifyWith mfs . map mf 
 
