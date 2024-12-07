@@ -1,6 +1,6 @@
 module List where
 
-import Prelude hiding ((.), (++), head, tail, length, foldr, foldl, flip, map, filter, reverse, take, drop, repeat, any, dropWhile, concat, replicate, zip, subseqs, init, inits)
+import Prelude hiding ((.), (++), head, tail, length, foldr, foldl, flip, map, filter, reverse, take, drop, repeat, any, dropWhile, takeWhile, concat, replicate, zip, subseqs, init, inits)
 
 import Nat
 
@@ -102,6 +102,11 @@ dropWhile :: (a -> Bool) -> [a] -> [a]
 dropWhile p as@(a:as')
   | p a = dropWhile p as'
   | otherwise = as
+
+takeWhile :: (a -> Bool) -> [a] -> [a]
+takeWhile p (x:xs) 
+  | p x = x:takeWhile p xs
+  | otherwise = []
 
 concat :: [[a]] -> [a]
 -- concat [] = []
