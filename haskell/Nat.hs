@@ -136,9 +136,9 @@ quot n m =
 rem :: Nat -> Nat -> Nat
 rem _ O = error "Division by zero"
 rem n m = 
-  if min n m == n
-  then n
-  else (n <-> m) `rem` m
+  if min n m == n && n /= m
+    then n
+    else rem (n <-> m) m
 
 -- quot' :: (Nat, Nat) -> Nat
 -- quot' (n, O) = undefined -- error "Division by zero isn't defined"

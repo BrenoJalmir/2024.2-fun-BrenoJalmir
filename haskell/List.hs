@@ -122,7 +122,7 @@ zip _ _ = []
 
 -- zip em termos de zipWith
 zip' :: [a] -> [b] -> [(a, b)]
-zip' = zW (, )
+zip' = zW (,)
 -- zip' = zW (\x y -> (x, y))
 
 subseqs :: [a] -> [[a]]
@@ -130,13 +130,13 @@ subseqs = undefined
 
 -- zipWith
 zW :: (a -> b -> c) -> [a] -> [b] -> [c]
-zW op (a:as) (b:bs) = (a `op` b):zW op as bs
+zW f (a:as) (b:bs) = (a `f` b):zW f as bs
 zW _ _ _ = []
 
 -- zipWith em termos de zip
 zW' :: (a -> b -> c) -> [a] -> [b] -> [c]
-zW' op as bs = map (uncurry op) (zip as bs)
--- zW' op as = map (uncurry op) . zip as 
+zW' f as bs = map (uncurry f) (zip as bs)
+-- zW' f as = map (uncurry f) . zip as 
 
 -- (errado) feito usando desconstrutor
 -- pairs :: [a] -> [(a, a)]

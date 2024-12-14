@@ -1,0 +1,26 @@
+(+) :: Nat -> Nat -> Nat
+n + O = n
+n + (S m) = S (n + m)
+
+(forall a, b, c :: Nat)[(a + b) + c = a + (b + c)]
+Sejam x, y, z :: Nat.
+Indução em z.
+	Caso O:
+  	(a + b) + O 
+    = [(+).1 n:= (a + b)]
+    a + b
+
+		a + (b + O)
+    = [(+).1 n:= b]
+    a + b
+  
+  Caso S k:
+  	(a + b) + S k
+    = [(+).2 n:= (a + b) m:= k]
+    S ((a + b) + k)
+    = [H.I.]
+    S (a + (b + k))
+    = [(+).2 n:= a m:= (b + k)]
+    a + (S (b + k))
+    = [(+).2 n:= b m:= k]
+    a + (b + S k)

@@ -1,0 +1,15 @@
+(forall a :: Nat)[O + a = a]
+Seja x :: Nat.
+Indução em x.
+	Caso O:
+  	O + O
+    = [(+).1 n:= O]
+    O
+  Caso S k:
+  	O + S k
+    = [(+).2 n:= O m:= k]
+    S (O + k)
+    = [H.I.]
+    S (k + O)
+    = [(+).1 n:= k]
+    S k
