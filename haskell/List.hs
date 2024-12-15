@@ -62,9 +62,16 @@ product = foldr (*) 1
 [] ++ as = as
 (a:as) ++ bs = a:(as ++ bs)
 
+-- revcat xs ys = rev xs ++ ys
+-- rev = flip revcat [] 
+revcat :: [a] -> [a] -> [a]
+revcat [] ys = ys
+revcat (x:xs) ys = revcat xs (x:ys)
+
 reverse :: [a] -> [a]
-reverse [] = []
-reverse (a:as) = reverse as ++ [a]
+reverse xs = revcat xs []
+-- reverse [] = []
+-- reverse (a:as) = reverse as ++ [a]
 -- reverse as = foldr (\a -> (++) [a]) [] as
 
 snoc :: a -> [a] -> [a]
