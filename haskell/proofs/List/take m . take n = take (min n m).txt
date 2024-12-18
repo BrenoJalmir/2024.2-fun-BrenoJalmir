@@ -1,0 +1,76 @@
+min :: Nat -> Nat -> Nat
+min O _ = O
+min _ O = O
+min (S n) (S m) = S (min n m)
+
+take :: Nat -> [a] -> [a]
+take _ [] = []
+take O _ = []
+take (S n) (x:xs) = x:take n xs
+
+(.) :: (b -> c) -> (a -> b) -> a -> c
+(f . g) x = f (g x)
+
+(forall n, m::Nat)[take m . take n = take (min m n)]
+Sejam n, m::Nat.
+Seja xs::[a].
+Indução em n:
+	Caso O:
+  	(take m . take O) xs
+    = [(.).1 f:= take m g:= take O]
+    take m (take O xs)
+    = [take.2]
+    take m []
+    = [take.1]
+    []
+    
+    take (min m O) xs
+  	= [min.2]
+    take O xs
+    = [take.2]
+    []
+  Caso S k:
+  	Indução no xs:
+    	Caso []:
+        (take m . take (S k)) []
+        = [(.).1 f:=take m g:= take (S k)]
+        take m (take (S k) [])
+        = [take.1]
+        take m []
+        = [take.1]
+        []
+
+        take (min (S k) m) []
+        = [take.1]
+        []
+      
+    	Caso (y:ys):
+      	Indução no m:
+        	Caso O:
+            (take O . take (S k)) (y:ys)
+            = [(.).1 f:=take O g:= take (S k)]
+            take O (take (S k) (y:ys))
+            = [take.2]
+            []
+
+            take (min O (S k)) (y:ys)
+            = [min.1]
+            take O (y:ys)
+            = [take.2]
+            []
+          Caso S w:
+          	(take (S w) . take (S k)) (y:ys)
+            = [(.).1 f:=take (S w) g:=take (S k)]
+            take (S w) (take (S k) (y:ys))
+          	= [take.3 n:=k (x:xs)=(y:ys)]
+            take (S w) (y:take k ys)
+            = [take.3 n:=w (x:xs):=y:take k ys]
+            y:take w (take k ys)
+            = [(.).1 f:=take w g:=take k]
+            y:((take w . take k) ys)
+            = [H.I.]
+            y:(take (min w k) ys)
+            = [take.3 n:=min w k (x:xs):=(y:ys)]
+            take (S (min w k) (y:ys))
+            = [min.3 n:=w m:=k]
+            take (min (S w) (S k) (y:ys))

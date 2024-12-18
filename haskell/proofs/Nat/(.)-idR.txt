@@ -1,0 +1,20 @@
+(*)-idR : (exist u)(forall x)[x * u = x]
+Seja u = S O.
+Seja n :: Nat.
+Indução em n:
+  Caso O:
+    O * (S O) 
+    = [(*).2 n:=O m:= O]
+    (O * O) + O
+    = [(*).1]
+    O + O
+    = [(+).1]
+     O
+  Caso S n':
+    (S n') * (S O)
+    = [(*).2 n:=(S n') m:= O]
+    (S n') + ((S n') * O)
+    = [(*).1]
+    (S n') + O
+    = [(+).1 n:= S n']
+    S n'

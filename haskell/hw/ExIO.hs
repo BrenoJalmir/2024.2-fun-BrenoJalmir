@@ -92,8 +92,8 @@ interactPerLine :: (String -> String) -> IO ()
 interactPerLine = interact . perlineize
 
 when :: Bool -> IO () -> IO ()
-when False _ = skip
 when True f = do f
+when False _ = skip
 
 unless :: Bool -> IO () -> IO ()
 unless = when . not

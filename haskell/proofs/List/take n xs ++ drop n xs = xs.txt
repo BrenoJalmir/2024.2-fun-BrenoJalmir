@@ -1,0 +1,46 @@
+take :: Nat -> [a] -> [a]
+take _ [] = []
+take O _ = []
+take (S n) (x:xs) = x:take n xs
+
+drop :: Nat -> [a] -> [a]
+drop _ [] = []
+drop O xs = xs
+drop (S n) (x:xs) = drop n xs
+
+(++) :: [a] -> [a] -> [a]
+[] ++ ys = ys
+(x:xs) ++ ys = x:(xs ++ ys)
+
+(forall n::Nat)(forall xs:[a])[take n xs ++ drop n xs = xs]
+Seja n::Nat.
+Seja xs::[a].
+Indução no n:
+  Caso O:
+    take O xs ++ drop O xs
+    = [take.2 xs:=xs]
+    [] ++ drop O xs
+    = [drop.2 xs:=xs]
+    [] ++ xs
+    = [(++).1]
+    xs
+  Caso S k:
+  	Indução no xs:
+    	Caso []
+  			take (S k) [] ++ drop (S k) []
+        = [take.1]
+        [] ++ drop (S k) []
+        = [drop.1]
+        [] ++ []
+        = [(++).1]
+        []
+      Caso (y:ys):
+      	take (S k) (y:ys) ++ drop (S k) (y:ys)
+        = [take.3 n:=k (x:xs)=(y:ys)]
+        y:(take k ys) ++ drop (S k) (y:ys)
+      	= [(++.2) (x:xs):=k:(take k ys) ys:=drop (S k) (y:ys)]
+        y:(take k ys ++ drop (S k) (y:ys))
+        = [drop.3 n:=k (x:xs):=(y:ys)]
+        y:(take k ys ++ drop k ys)
+        = [H.I.]
+        y:ys

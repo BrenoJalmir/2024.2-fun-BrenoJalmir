@@ -1,0 +1,75 @@
+take :: Nat -> [a] -> [a]
+take _ [] = []
+take O _ = []
+take (S n) (x:xs) = x:take n xs
+
+drop :: Nat -> [a] -> [a]
+drop _ [] = []
+drop O xs = xs
+drop (S n) (x:xs) = drop n xs
+
+(.) :: (b -> c) -> (a -> b) -> a -> c
+(f . g) x = f (g x)
+
+(forall m, n::Nat)[take m . drop n = drop n . take (n + m)]
+Sejam n, m::Nat.
+Seja xs:[a].
+Indução no n:
+	Caso O:
+  	(take m . drop O) xs
+    = [(.).1 f:=take m g:= drop O]
+    take m (drop O xs)
+    = [drop.2 xs:=xs]
+    take m xs
+    
+    (drop O . take (O + m)) xs
+    = [(.) f:=drop O g:=take (O + m)]
+    drop O (take (O + m) xs)
+    = [drop.2 xs:= take (O + m) xs]
+    take (O + m) xs
+    = [(O + n) = n]
+    take m xs
+ 	Caso S k:
+  	Indução no xs:
+    	Caso []:
+        (take m . drop (S k)) []
+        = [(.).1 f:=take m g:=drop (S k)]
+        take m (drop (S k) [])
+        = [drop.1]
+        take m []
+        = [take.1]
+        []
+
+        (drop (S k) . take ((S k) + m)) []
+        = [(.).1 f:= drop (S k) g:=take ((S k) + m)]
+        drop (S k) (take ((S k) + m) [])
+        = [take.1]
+        drop (S k) []
+        = [drop.1]
+        []
+    	Caso (y:ys):
+        (take m . drop (S k)) (y:ys)
+        = [(.).1 f:=take m g:=drop (S k)]
+        take m (drop (S k) (y:ys))
+        = [drop.3 n:=k (x:xs):=(y:ys)]
+        take m (drop k ys)
+        = [(.).1 f:= take m g:=drop k]
+        (take m . drop k) ys
+        = [H.I.]
+        (drop k . take (k + m)) ys
+
+				(drop (S k) . take ((S k) + m)) (y:ys)
+        = [(.).1 f:=drop (S k) g:=take ((S k) + m)]
+        drop (S k) (take ((S k) + m) (y:ys))
+        = [(+).com && (+).2 n:= m m:=k]
+        drop (S k) (take (S (m + k)) (y:ys))
+        = [take.3]
+        drop (S k) (y:take (m + k) ys)
+        = [drop.3 n:=k (x:xs):=(y:take (m + k) ys)]
+        drop k (take (m + k) ys)
+        = [(+).comu]
+        drop k (take (k + m) ys)
+        = [(.).1 f:=drop k g:=take (m + k) ys]
+        (drop k . take (k + m)) ys
+        = [H.I]
+        (take m . drop k) ys

@@ -1,0 +1,28 @@
+(^)-idR : (exist u)(forall x)[x^u = x]
+Seja u = S O.
+Seja n :: Nat.
+Indução em n:
+  Caso O:
+    O ^ (S O) 
+    = [(^).2 n:=O m:= O]
+    (O ^ O) * O
+    = [(^).1]
+    (S O) * O
+    = [(*).1]
+    O
+  Caso S n':
+    (S n') ^ (S O)
+    = [(*).2 n:=(S n') m:= O]
+    ((S n') ^ O) * (S n')
+    = [(^).1]
+    (S O) * (S n')
+    = [(*).2 n:=(S O) m:= n']
+    (S O) + ((S O) * n')
+    = [H.I.]
+    (S O) + n'
+    = [(+).com]
+    n' + (S O)
+    = [(+).2]
+    S (n'+ O)
+    = [(+).1]
+    S n'

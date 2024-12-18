@@ -8,8 +8,10 @@ Indução em y.
     = [O + a = a]
     O + x
   Caso S k:
-  	x + S k
+  	x + (S k)
     = [(+).2 n:= x m:= k]
     S (x + k)
     = [H.I.]
     S (k + x)
+    = [(+).2 n:= k m:= x]
+    (S k) + x

@@ -109,7 +109,7 @@ fib (S (S n)) = fib (S n) + fib n
 fib n = n
 
 -- divNat :: (Nat, Nat) -> (Nat, Nat)
--- divNat (_, O) = undefined
+-- divNat (_, O) = error "division by O"
 -- divNat (O, _) = (O, O)
 -- divNat (n, S O) = (n, O)
 -- divNat (n, m) = 
@@ -141,7 +141,7 @@ rem n m =
     else rem (n <-> m) m
 
 -- quot' :: (Nat, Nat) -> Nat
--- quot' (n, O) = undefined -- error "Division by zero isn't defined"
+-- quot' (n, O) = error "Division by zero isn't defined"
 -- quot' (O, n) = O
 -- quot' (n, S O) = n
 -- quot' (n, m) = 
@@ -150,12 +150,12 @@ rem n m =
 --   (S (quot' (n - m, m)))
 
 -- rem' :: (Nat, Nat) -> Nat
--- rem' (_, O) = undefined -- error "Division by zero isn't defined"
+-- rem' (_, O) = error "Division by zero isn't defined"
 -- rem' (O, _) = O
 -- rem' (n, m) = n - (quot' (n, m) * m)
 
 -- div' :: (Nat, Nat) -> (Nat, Nat)
--- -- div' (_, O) = undefined -- error "Division by zero isn't defined"
+-- -- div' (_, O) = error "Division by zero isn't defined"
 -- div' (n, m) = (quot' (n, m), rem' (n, m))
 
 gcd :: Nat -> Nat -> Nat

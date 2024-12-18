@@ -155,7 +155,10 @@ pairs [a] = []
 pairs (a:as@(a':as')) = (a, a'):pairs as
 
 init :: [a] -> [a]
-init as = reverse $ tail $ reverse as
+init [] = []
+init [x] = []
+init (x:xs) = x:init xs
+-- init as = reverse $ tail $ reverse as
 
 inits :: [a] -> [[a]]
 inits [] = [[]]

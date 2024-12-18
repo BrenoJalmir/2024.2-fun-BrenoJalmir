@@ -31,4 +31,7 @@ eval (Neg exp) = - eval exp
 eval (Atom n) = n
 
 height :: ArEx -> Nat
-height = undefined
+height (Plus e1 e2) = S $ max (height e1) (height e2)
+height (Times e1 e2) = S $ max (height e1) (height e2)
+height (Neg e) = S (height e)
+height (Atom _) = S O
