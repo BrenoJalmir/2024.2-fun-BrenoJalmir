@@ -109,11 +109,11 @@ liftA :: Applicative f => (a -> b) -> f a -> f b
 liftA = fmap
 
 liftA2 :: Applicative f => (a -> b -> c) -> f a -> f b -> f c
-liftA2 = undefined
+liftA2 f x y = f <$> x <*> y
 
 -- sequence actions, discarding the value of the first argument
 (*>) :: Applicative f => f a -> f b -> f b
-(*>) = undefined
+x *> y = (id <$ x) <*> y
 
 -- sequence actions, discarding the value of the second argument
 (<*) :: Applicative f => f a -> f b -> f a
@@ -123,13 +123,14 @@ liftA2 = undefined
 -- It differs from flip (<*>) in that the effects are resolved
 -- in the order the arguments are presented.
 (<**>) :: Applicative f => f a -> f (a -> b) -> f b
-(<**>) = undefined
+(<**>) = liftA2 (flip ($))
 
 when :: Applicative f => Bool -> f () -> f ()
-when = undefined
+when True f = f
+when False _ = pure ()
 
 unless :: Applicative f => Bool -> f () -> f ()
-unless = undefined
+unless = when . not
 
 sequenceAL :: Applicative f => [f a] -> f [a]
 sequenceAL = undefined
@@ -142,38 +143,42 @@ infixl 4 <*>, *>, <*, <**>
 -- Maybe
 instance Applicative Maybe where
     pure = Just
-    (<*>) = undefined
+    Just f <*> mx = f <$> mx
+    Nothing <*> _ = Nothing
 
 -- Lists with ambiguous computational aspect (non-determinism):
 -- Create an isomorphic copy of the type List a, called Ambiguous a
-newtype Ambiguous a = Ambiguous [a]
+newtype Ambiguous a = Ambiguous {getAmbiguous :: [a]}
 
 -- show ambiguous lists like this: ?[1,2,3]
 instance Show a => Show (Ambiguous a) where
   show (Ambiguous xs) = "?" <> show xs
 
 instance Functor Ambiguous where
-    fmap = undefined
+    fmap f (Ambiguous (x:xs)) = Ambiguous (f x:fmap f xs)
 
 instance Applicative Ambiguous where
-    pure = undefined
-    (<*>) = undefined
+    pure x = Ambiguous [x]
+    (<*>) :: Ambiguous (a -> b) -> Ambiguous a -> Ambiguous b
+    -- Ambiguous af <*> Ambiguous ax = Ambiguous [f x | f <- af, x <- ax]
+    Ambiguous (f:fs) <*> Ambiguous xs = Ambiguous (fmap f xs ++ getAmbiguous (Ambiguous fs <*> Ambiguous xs))
+    _ <*> _ = Ambiguous []
 
 -- Lists with temporal computational aspect (sequencial):
 -- Create an isomorphic copy of the type List a, called Temporal a
 -- (the isomorphism is given by the constructor/wrapper Temporal : List a -> Temporal a)
-newtype Temporal a = Temporal [a]
+newtype Temporal a = Temporal {getTemporal :: [a]}
 
 -- show temporal lists like this: →[1,2,3]
 instance Show a => Show (Temporal a) where
   show (Temporal xs) = "→" <> show xs
 
 instance Functor Temporal where
-    fmap = undefined
+    fmap f (Temporal (x:xs)) = Temporal (f x:fmap f xs)
 
 instance Applicative Temporal where
-    pure = undefined
-    (<*>) = undefined
+    pure x = Temporal [x]
+    -- Temporal fs <*> Temporal xs = Temporal (zipWith ($) fs xs) 
 
 -- IO
 instance Applicative IO where

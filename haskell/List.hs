@@ -133,7 +133,12 @@ zip' = zW (,)
 -- zip' = zW (\x y -> (x, y))
 
 subseqs :: [a] -> [[a]]
-subseqs = undefined
+subseqs [] = [[]]
+subseqs (x : xs) = with_x ++ without_x
+  where
+    without_x = subseqs xs
+    with_x    = map (x :) without_x
+
 
 -- zipWith
 zW :: (a -> b -> c) -> [a] -> [b] -> [c]
