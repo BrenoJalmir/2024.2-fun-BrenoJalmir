@@ -160,9 +160,9 @@ instance Functor Ambiguous where
 instance Applicative Ambiguous where
     pure x = Ambiguous [x]
     (<*>) :: Ambiguous (a -> b) -> Ambiguous a -> Ambiguous b
-    -- Ambiguous af <*> Ambiguous ax = Ambiguous [f x | f <- af, x <- ax]
-    Ambiguous (f:fs) <*> Ambiguous xs = Ambiguous (fmap f xs ++ getAmbiguous (Ambiguous fs <*> Ambiguous xs))
-    _ <*> _ = Ambiguous []
+    Ambiguous af <*> Ambiguous ax = Ambiguous [f x | f <- af, x <- ax]
+    -- Ambiguous (f:fs) <*> Ambiguous xs = Ambiguous (fmap f xs ++ getAmbiguous (Ambiguous fs <*> Ambiguous xs))
+    -- _ <*> _ = Ambiguous []
 
 -- Lists with temporal computational aspect (sequencial):
 -- Create an isomorphic copy of the type List a, called Temporal a
@@ -178,12 +178,17 @@ instance Functor Temporal where
 
 instance Applicative Temporal where
     pure x = Temporal [x]
-    -- Temporal fs <*> Temporal xs = Temporal (zipWith ($) fs xs) 
+    Temporal fs <*> Temporal xs = Temporal (zipWith ($) fs xs) 
+    -- Temporal (f:fs) <*> Temporal (x:xs) = Temporal (f x:getTemporal (Temporal fs <*> Temporal xs))
+    -- _ <*> _ = Temporal []
 
 -- IO
 instance Applicative IO where
-    pure = undefined
-    (<*>) = undefined
+    pure = pure -- return
+    af <*> ax = 
+      do
+        f <- af
+        f <$> ax 
 
 -- (m ×)
 instance Monoid m => Applicative ((,) m) where
